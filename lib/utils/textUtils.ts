@@ -8,6 +8,10 @@ export function extractFirst(patterns: RegExp[], text: string) {
 
 export function toIsoDate(input: string) {
   const clean = input.trim();
+  const iso = clean.match(/\b(\d{4})-(\d{1,2})-(\d{1,2})\b/);
+  if (iso) {
+    return `${iso[1]}-${iso[2].padStart(2, "0")}-${iso[3].padStart(2, "0")}`;
+  }
   const dmy = clean.match(/(\d{1,2})[\/\-. ](\d{1,2})[\/\-. ](\d{2,4})/);
   if (dmy) {
     const year = dmy[3].length === 2 ? `20${dmy[3]}` : dmy[3];

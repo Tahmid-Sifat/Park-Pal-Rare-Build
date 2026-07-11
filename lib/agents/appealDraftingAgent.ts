@@ -9,6 +9,7 @@ export function draftAppeal(caseFile: CaseFile, selectedGroundIds?: string[], to
     .join("\n");
   const evidenceText = evidence.length ? evidence.map((item) => `- ${item}`).join("\n") : "- Evidence still to be attached or confirmed.";
   const introTone = tone === "Very concise" ? "I challenge this Parking Charge Notice." : "I am challenging this parking notice based on the facts and evidence currently available.";
+  const guidanceNotes = guidanceFromContext(caseFile.retrievedContext, caseFile.retrievedSources.map((s) => s.document));
 
   const full = `Dear Sir/Madam,
 
@@ -27,6 +28,7 @@ ${groundText || "- No appeal grounds selected yet."}
 
 Evidence referenced
 ${evidenceText}
+${guidanceNotes}
 
 Requested outcome
 Please review the evidence and cancel the notice. If you do not cancel it, please provide a clear explanation addressing each point and confirm the available escalation route and deadline.
@@ -39,4 +41,15 @@ Yours faithfully`;
     draftShort: short.slice(0, 1000),
     draftFull: full
   };
+}
+
+function guidanceFromContext(retrievedContext: string | undefined, sourceDocs: string[]) {
+  if (!retrievedContext?.trim() || !sourceDocs.length) return "";
+  const firstSnippet = retrievedContext.split("\n\n")[0]?.replace(/^[^:]+:\s*/, "").trim();
+  if (!firstSnippet) return "";
+  return `
+Relevant guidance considered
+- Sources: ${sourceDocs.join(", ")}
+- Note: ${firstSnippet.slice(0, 280)}${firstSnippet.length > 280 ? "…" : ""}
+`;
 }

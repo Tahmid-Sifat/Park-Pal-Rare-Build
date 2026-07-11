@@ -10,13 +10,15 @@ import { buildRiskFlags } from "./riskGuardAgent";
 import { CaseFile } from "@/lib/types/caseTypes";
 import { saveCase } from "@/lib/storage/caseStore";
 import { buildNextActions } from "./actionAgent";
+import { buildRagQuery } from "@/lib/rag/queryBuilder";
 
 export async function analyzeNotice(rawText: string, options: { demoEvidence?: boolean } = {}) {
   const now = new Date().toISOString();
   const fields = readNotice(rawText);
   const classification = classifyIssuer(fields);
   const deadlines = buildDeadlines(fields);
-  const rag = await retrieveRagContext(`${rawText} ${classification.classification} signage short stay evidence appeal`, 5);
+  const ragQuery = buildRagQuery(fields, classification.classification);
+  const rag = await retrieveRagContext(ragQuery, 5);
   const sources = rag.relevantSnippets;
   const grounds = suggestAppealGrounds(fields, classification.classification, sources, options.demoEvidence);
   const evidence = buildEvidenceChecklist(grounds, options.demoEvidence);
@@ -50,10 +52,16 @@ export async function analyzeNotice(rawText: string, options: { demoEvidence?: b
       { id: "read", label: "Notice read", detail: "Structured fields extracted from pasted or uploaded text.", createdAt: now },
       { id: "classified", label: "Type classified", detail: classification.reason, createdAt: now },
       { id: "deadlines", label: "Deadlines extracted", detail: `${deadlines.length} deadline cards prepared with reminders.`, createdAt: now },
-      { id: "sources", label: "Sources retrieved", detail: sources.map((source) => source.document).join(", "), createdAt: now },
+      {
+        id: "sources",
+        label: "Sources retrieved",
+        detail: `${sources.map((source) => source.document).join(", ") || "none"} via ${rag.modeUsed} RAG`,
+        createdAt: now
+      },
       { id: "evidence", label: "Evidence checked", detail: `${evidence.length} evidence items generated.`, createdAt: now }
     ],
-    retrievedSources: sources
+    retrievedSources: sources,
+    retrievedContext: rag.retrievedContext
   };
 
   const drafts = draftAppeal(caseFile);

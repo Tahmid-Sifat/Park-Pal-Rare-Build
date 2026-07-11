@@ -57,6 +57,6 @@ export function suggestAppealGrounds(fields: NoticeFields, noticeType: NoticeTyp
 }
 
 function refs(sources: RetrievedSource[], wanted: string[]) {
-  const matched = sources.filter((source) => wanted.includes(source.document)).map((source) => source.document);
-  return matched.length ? matched : wanted;
+  // Only cite documents that were actually retrieved for this case.
+  return sources.filter((source) => wanted.includes(source.document)).map((source) => source.document);
 }

@@ -106,6 +106,8 @@ export type CaseFile = {
   nextActions: string[];
   timeline: TimelineEvent[];
   retrievedSources: RetrievedSource[];
+  /** Concatenated KB snippets used when drafting / explaining guidance. */
+  retrievedContext?: string;
   rejectionAnalysis?: RejectionAnalysis;
 };
 
@@ -117,4 +119,7 @@ export type RejectionAnalysis = {
   nextRecommendedAction: string;
   escalationDraft: string;
   riskFlags: string[];
+  retrievedSources?: RetrievedSource[];
+  retrievedContext?: string;
+  ragModeUsed?: string;
 };

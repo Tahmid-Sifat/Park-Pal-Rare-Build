@@ -1,9 +1,12 @@
+import { ensureSystemCertificates } from "./systemCa";
+
 type GenerateOptions = {
   temperature?: number;
   system?: string;
 };
 
 export async function generateText(prompt: string, _options: GenerateOptions = {}) {
+  ensureSystemCertificates();
   if (process.env.DEMO_MODE === "true" || !hasConfiguredKey()) {
     return [
       "Demo-mode ParkPal response.",
@@ -34,7 +37,7 @@ function hasConfiguredKey() {
     fireworks: process.env.FIREWORKS_API_KEY,
     deepseek: process.env.DEEPSEEK_API_KEY,
     lmstudio: process.env.LMSTUDIO_BASE_URL,
-    ollama: process.env.OLLAMA_BASE_URL
+    ollama: process.env.OLLAMA_API_KEY || process.env.OLLAMA_BASE_URL
   };
   return Boolean(keyByProvider[provider]);
 }
@@ -75,18 +78,47 @@ async function callOpenAiCompatible(prompt: string, options: GenerateOptions) {
 }
 
 async function callOllama(prompt: string, options: GenerateOptions) {
-  const baseUrl = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
-  const res = await fetch(`${baseUrl}/api/generate`, {
+  const baseUrl = (process.env.OLLAMA_BASE_URL || "http://localhost:11434").replace(/\/$/, "");
+  const apiKey = process.env.OLLAMA_API_KEY?.trim();
+  const model = process.env.OLLAMA_MODEL || "llama3.1";
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
+
+  // Prefer chat endpoint (cloud + local); fall back to generate.
+  const chatRes = await fetch(`${baseUrl}/api/chat`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify({
-      model: process.env.OLLAMA_MODEL || "llama3.1",
+      model,
+      stream: false,
+      messages: [
+        ...(options.system ? [{ role: "system", content: options.system }] : []),
+        { role: "user", content: prompt }
+      ],
+      options: { temperature: options.temperature ?? 0.2 }
+    })
+  });
+
+  if (chatRes.ok) {
+    const data = (await chatRes.json()) as { message?: { content?: string }; response?: string };
+    return data.message?.content || data.response || "";
+  }
+
+  const generateRes = await fetch(`${baseUrl}/api/generate`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      model,
       prompt: [options.system, prompt].filter(Boolean).join("\n\n"),
       stream: false,
       options: { temperature: options.temperature ?? 0.2 }
     })
   });
-  if (!res.ok) return `Local model error (${res.status}). Demo fallback: ${prompt.slice(0, 500)}`;
-  const data = (await res.json()) as { response?: string };
+
+  if (!generateRes.ok) {
+    return `Ollama error (${generateRes.status}). Demo fallback: ${prompt.slice(0, 500)}`;
+  }
+
+  const data = (await generateRes.json()) as { response?: string };
   return data.response || "";
 }

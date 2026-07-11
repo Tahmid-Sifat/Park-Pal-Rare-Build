@@ -1,7 +1,8 @@
 import { RetrievedSource } from "@/lib/types/caseTypes";
 import { loadKnowledgeBase } from "./loadKnowledgeBase";
 
-export async function retrieveWithEmbeddingsFallback(query: string, limit = 5): Promise<RetrievedSource[]> {
+/** Local lexical "embedding" fallback: bag-of-words + cosine similarity (no external API). */
+export async function retrieveWithLocalEmbeddings(query: string, limit = 5): Promise<RetrievedSource[]> {
   const docs = await loadKnowledgeBase();
   const queryVector = vectorize(query);
 
@@ -19,6 +20,11 @@ export async function retrieveWithEmbeddingsFallback(query: string, limit = 5): 
     .filter((source) => source.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
+}
+
+/** @deprecated Prefer retrieveWithLocalEmbeddings — kept for older imports. */
+export async function retrieveWithEmbeddingsFallback(query: string, limit = 5): Promise<RetrievedSource[]> {
+  return retrieveWithLocalEmbeddings(query, limit);
 }
 
 function vectorize(text: string) {

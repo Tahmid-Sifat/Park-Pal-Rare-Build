@@ -38,7 +38,7 @@ ChatGPT can explain how to appeal. ParkPal helps you actually act correctly and 
 - Notice type classification
 - Deadline dashboard with reminder chips
 - `.ics` calendar export
-- Local RAG-style knowledge retrieval from `knowledge_base/`
+- Configurable RAG retrieval from `knowledge_base/` (`RAG_MODE=keyword|local|openai`)
 - Appeal grounds ranking
 - Evidence checklist and evidence strength meter
 - Local evidence file storage for demo case memory
@@ -68,7 +68,7 @@ ParkPal uses a multi-agent style architecture. The current MVP keeps the agents 
 | Notice Reader Agent | Extracts structured notice fields from pasted/uploaded text. |
 | Issuer Classification Agent | Classifies the notice route and flags suspicious or urgent wording. |
 | Deadline Agent | Builds appeal, payment, discount, evidence, and escalation deadlines. |
-| RAG Knowledge Agent | Retrieves relevant local knowledge-base snippets. |
+| RAG Knowledge Agent | Retrieves relevant local knowledge-base snippets via `RAG_MODE` (keyword, local lexical, or OpenAI embeddings). |
 | Appeal Grounds Agent | Suggests possible appeal grounds and evidence requirements. |
 | Evidence Checklist Agent | Converts grounds into evidence tasks. |
 | Evidence Update Agent | Updates evidence status and stores evidence metadata. |
@@ -183,9 +183,22 @@ DEMO_MODE=true
 LLM_PROVIDER=openai
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o-mini
+RAG_MODE=keyword
+EMBEDDING_PROVIDER=none
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 ```
 
 When `DEMO_MODE=true` or no provider key is configured, ParkPal uses deterministic fallback behaviour. This keeps the demo reliable without external services.
+
+RAG modes:
+- `keyword` — term overlap over `knowledge_base/*.md` (no API)
+- `local` (alias `embedding`) — bag-of-words cosine similarity, no API
+- `openai` — OpenAI embeddings; set `EMBEDDING_PROVIDER=openai` and `OPENAI_API_KEY`
+- `ollama` — local (or remote) Ollama `/api/embed`; set `OLLAMA_EMBED_BASE_URL` (default `http://127.0.0.1:11434`) and `OLLAMA_EMBEDDING_MODEL` (e.g. `nomic-embed-text`). Chat can still use Ollama Cloud via `OLLAMA_BASE_URL=https://ollama.com`.
+
+Rejection analysis also runs RAG retrieval and can draft an escalation paragraph with the configured chat model.
+
+Provider failures fall back to `local` lexical retrieval.
 
 Supported provider configuration placeholders include OpenAI, Anthropic, Gemini, OpenRouter, Groq, Fireworks, DeepSeek, LM Studio, and Ollama. The current agent flow remains deterministic unless you wire provider calls into specific agents.
 

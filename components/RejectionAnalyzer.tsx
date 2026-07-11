@@ -54,6 +54,22 @@ export function RejectionAnalyzer({ caseId }: { caseId: string }) {
               <p className="mt-2 font-semibold leading-6 text-app">{value}</p>
             </div>
           ))}
+          {analysis.retrievedSources?.length ? (
+            <div className="micro-card p-4">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-muted">
+                Knowledge retrieved ({analysis.ragModeUsed || "rag"})
+              </p>
+              <ul className="mt-2 space-y-2 text-sm leading-6 text-app">
+                {analysis.retrievedSources.map((source) => (
+                  <li key={`${source.document}-${source.score}`}>
+                    <span className="font-semibold">{source.document}</span>
+                    <span className="text-muted"> · score {source.score}</span>
+                    <p className="mt-1 text-muted">{source.snippet.slice(0, 180)}{source.snippet.length > 180 ? "…" : ""}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
           <textarea className="focus-ring min-h-40 rounded-[1.5rem] border border-app bg-app-surface p-4 leading-7" value={analysis.escalationDraft} onChange={(e) => setAnalysis({ ...analysis, escalationDraft: e.target.value })} />
         </div>
       ) : null}

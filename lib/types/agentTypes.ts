@@ -30,6 +30,7 @@ export type RagAgentOutput = {
   sourceDocuments: string[];
   relevantSnippets: RetrievedSource[];
   confidence: number;
+  modeUsed: "keyword" | "local" | "openai" | "ollama";
 };
 
 export type AppealGroundsOutput = {

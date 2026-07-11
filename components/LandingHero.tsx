@@ -16,28 +16,28 @@ export function LandingHero() {
     <main className="page-shell">
       <AppNav />
       <div className="content-shell space-y-10">
-        <section className="grid min-h-[calc(100vh-9rem)] items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="space-y-8 animate-fadeInUp">
+        <section className="grid min-h-0 items-center gap-8 py-4 lg:min-h-[calc(100vh-9rem)] lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="min-w-0 space-y-6 animate-fadeInUp sm:space-y-8">
             <div className="space-y-4">
               <span className="hero-badge">
                 <Sparkles className="h-4 w-4 text-primary" />
                 Your AI parking notice action agent
               </span>
-              <h1 className="max-w-4xl text-[clamp(2.4rem,7vw,5.8rem)] font-black leading-[0.95] tracking-tight text-app">
+              <h1 className="max-w-4xl text-[clamp(2rem,8vw,5.8rem)] font-black leading-[0.95] tracking-tight text-app">
                 Turn a parking notice into an action plan.
               </h1>
-              <p className="max-w-2xl text-lg leading-8 text-muted md:text-xl">
+              <p className="max-w-2xl text-base leading-7 text-muted sm:text-lg sm:leading-8 md:text-xl">
                 ParkPal reads your PCN or parking charge, finds the deadlines, checks possible appeal routes, builds your evidence checklist, and drafts a calm challenge letter.
               </p>
             </div>
             <TrackBadges />
-            <div className="flex flex-wrap gap-3">
-              <Link href="/upload" className="btn-primary focus-ring">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link href="/upload" className="btn-primary focus-ring w-full sm:w-auto">
                 <FileScan className="h-5 w-5" />
                 Scan a notice
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <Link href="/upload?demo=true" className="btn-secondary focus-ring">
+              <Link href="/upload?demo=true" className="btn-secondary focus-ring w-full sm:w-auto">
                 View demo case
               </Link>
             </div>

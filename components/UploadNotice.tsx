@@ -81,8 +81,8 @@ export function UploadNotice() {
           <Link href="/" className="btn-ghost focus-ring w-fit">ParkPal</Link>
           <div className="space-y-4">
             <span className="hero-badge"><ScanLine className="h-4 w-4 text-primary" /> Notice scanner</span>
-            <h1 className="text-[clamp(2.2rem,5vw,4.8rem)] font-black leading-[0.98] tracking-tight text-app">Upload your parking notice.</h1>
-            <p className="max-w-2xl text-lg leading-8 text-muted">
+            <h1 className="text-[clamp(1.9rem,7vw,4.8rem)] font-black leading-[0.98] tracking-tight text-app">Upload your parking notice.</h1>
+            <p className="max-w-2xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
               Upload a PDF notice, drop in a photo, or paste the text. ParkPal reads it, extracts key details, finds deadlines, and prepares the next action plan.
             </p>
           </div>
@@ -106,7 +106,7 @@ export function UploadNotice() {
           <div className="grid gap-5 xl:grid-cols-[1fr_0.85fr]">
             <div className="space-y-4">
               <label
-                className={`focus-ring group flex min-h-56 cursor-pointer flex-col items-center justify-center gap-4 rounded-[1.75rem] border border-dashed bg-app-surface p-8 text-center transition ${
+                className={`focus-ring group flex min-h-48 cursor-pointer flex-col items-center justify-center gap-3 rounded-[1.5rem] border border-dashed bg-app-surface p-5 text-center transition sm:min-h-56 sm:gap-4 sm:rounded-[1.75rem] sm:p-8 ${
                   dragging ? "border-[color:var(--primary)] shadow-[0_18px_48px_var(--glow)]" : "border-app hover:shadow-[0_18px_48px_var(--glow)]"
                 }`}
                 onDragEnter={(e) => {

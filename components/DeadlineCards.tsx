@@ -22,7 +22,7 @@ export function DeadlineCards({ caseFile }: { caseFile: CaseFile }) {
           <article key={deadline.id} className="micro-card p-4">
             <p className="text-xs font-black uppercase tracking-[0.16em] text-muted">{deadline.type}</p>
             <h3 className="mt-2 text-lg font-black text-app">{deadline.title}</h3>
-            <p className="mb-3 mt-2 text-3xl font-black text-primary">{displayDate(deadline.date)}</p>
+            <p className="mb-3 mt-2 text-2xl font-black text-primary sm:text-3xl">{displayDate(deadline.date)}</p>
             <ConfidenceBar value={deadline.confidence} />
             <div className="mt-4 flex flex-wrap gap-2">
               {reminderLabels.map((reminder) => <span key={reminder} className="rounded-full border border-app px-2 py-1 text-[11px] font-bold text-muted">{reminder}</span>)}

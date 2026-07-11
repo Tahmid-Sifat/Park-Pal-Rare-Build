@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ArrowRight, CheckCircle2, FileText, FileUp, Loader2, ScanLine, Wand2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, FileText, FileType, FileUp, Image as ImageIcon, Loader2, ScanLine, Wand2 } from "lucide-react";
 import { AppNav } from "./AppNav";
 import { DisclaimerBanner } from "./DisclaimerBanner";
 
@@ -18,6 +18,7 @@ export function UploadNotice() {
   const [loading, setLoading] = useState(false);
   const [demoEvidence, setDemoEvidence] = useState(false);
   const [error, setError] = useState("");
+  const [dragging, setDragging] = useState(false);
 
   useEffect(() => {
     if (params.get("demo") === "true") void loadDemo();
@@ -25,6 +26,7 @@ export function UploadNotice() {
 
   async function loadDemo() {
     setError("");
+    setNoticeFile(null);
     const res = await fetch("/api/demo-notice");
     const text = await res.text();
     setNoticeText(text);
@@ -40,9 +42,13 @@ export function UploadNotice() {
     if (file.type.startsWith("text/") || file.name.endsWith(".txt")) {
       setNoticeText(await file.text());
     } else if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
-      setNoticeText((current) => current || `Uploaded PDF: ${file.name}\n\nParkPal will attempt basic embedded-text extraction. If the result is poor, paste the notice text here before analysing.`);
+      setNoticeText(
+        `Uploaded PDF: ${file.name}\n\nParkPal will attempt basic embedded-text extraction from this PDF. If the result is poor, paste the notice text below before analysing.`
+      );
     } else {
-      setNoticeText((current) => current || `Uploaded image: ${file.name}\n\nImage OCR is an MVP placeholder. Paste notice text here for reliable extraction.`);
+      setNoticeText(
+        `Uploaded image: ${file.name}\n\nImage OCR is an MVP placeholder. Paste notice text below for reliable extraction.`
+      );
     }
   }
 
@@ -77,7 +83,7 @@ export function UploadNotice() {
             <span className="hero-badge"><ScanLine className="h-4 w-4 text-primary" /> Notice scanner</span>
             <h1 className="text-[clamp(2.2rem,5vw,4.8rem)] font-black leading-[0.98] tracking-tight text-app">Upload your parking notice.</h1>
             <p className="max-w-2xl text-lg leading-8 text-muted">
-              Add a notice file or paste the text. ParkPal reads it, extracts key details, finds deadlines, and prepares the next action plan.
+              Upload a PDF notice, drop in a photo, or paste the text. ParkPal reads it, extracts key details, finds deadlines, and prepares the next action plan.
             </p>
           </div>
           <div className="premium-card p-5">
@@ -99,13 +105,63 @@ export function UploadNotice() {
         <section className={`premium-card p-5 md:p-7 ${loading ? "scan-line" : ""}`}>
           <div className="grid gap-5 xl:grid-cols-[1fr_0.85fr]">
             <div className="space-y-4">
-              <label className="focus-ring group flex min-h-48 cursor-pointer flex-col items-center justify-center gap-4 rounded-[1.75rem] border border-dashed border-app bg-app-surface p-8 text-center hover:shadow-[0_18px_48px_var(--glow)]">
+              <label
+                className={`focus-ring group flex min-h-56 cursor-pointer flex-col items-center justify-center gap-4 rounded-[1.75rem] border border-dashed bg-app-surface p-8 text-center transition ${
+                  dragging ? "border-[color:var(--primary)] shadow-[0_18px_48px_var(--glow)]" : "border-app hover:shadow-[0_18px_48px_var(--glow)]"
+                }`}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  setDragging(true);
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragging(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  setDragging(false);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragging(false);
+                  void handleFile(e.dataTransfer.files?.[0]);
+                }}
+              >
                 <span className="grid h-16 w-16 place-items-center rounded-3xl" style={{ background: "linear-gradient(135deg, var(--primary), var(--primary-2))", color: "white" }}>
                   <FileUp className="h-7 w-7" />
                 </span>
-                <span className="text-xl font-black text-app">{fileText || "Drop in a PDF, photo, or text notice"}</span>
-                <span className="max-w-md text-sm leading-6 text-muted">PDF and image support stays lightweight for the MVP. Pasted text gives the most reliable extraction.</span>
-                <input className="sr-only" type="file" accept=".txt,text/plain,.pdf,image/*" onChange={(e) => handleFile(e.target.files?.[0])} />
+                <span className="text-xl font-black text-app">
+                  {fileText || "Upload a PDF parking notice"}
+                </span>
+                <span className="max-w-md text-sm leading-6 text-muted">
+                  {noticeFile
+                    ? "File ready. Click to replace it, or paste clearer text below if needed."
+                    : "Click to browse, or drag and drop your notice here. PDF upload is supported."}
+                </span>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-app px-3 py-1.5 text-xs font-black text-app">
+                    <FileType className="h-3.5 w-3.5 text-primary" /> PDF
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-app px-3 py-1.5 text-xs font-black text-app">
+                    <ImageIcon className="h-3.5 w-3.5 text-primary" /> Image
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-app px-3 py-1.5 text-xs font-black text-app">
+                    <FileText className="h-3.5 w-3.5 text-primary" /> Text
+                  </span>
+                </div>
+                <span className="btn-secondary pointer-events-none mt-1 px-4 py-2 text-sm">
+                  <FileUp className="h-4 w-4 text-primary" />
+                  {noticeFile || fileText ? "Choose another file" : "Choose PDF or photo"}
+                </span>
+                <span className="max-w-md text-xs leading-5 text-muted">
+                  Embedded PDF text is extracted for the MVP. Pasted text is still the most reliable fallback.
+                </span>
+                <input
+                  className="sr-only"
+                  type="file"
+                  accept=".pdf,application/pdf,.txt,text/plain,image/*"
+                  onChange={(e) => handleFile(e.target.files?.[0])}
+                />
               </label>
 
               <textarea

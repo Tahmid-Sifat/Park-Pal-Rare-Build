@@ -1,9 +1,15 @@
-﻿import type { Metadata } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "ParkPal | Scan. Understand. Act.",
   description: "Scan your parking notice. ParkPal verifies it and helps complete the correct next action."
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover"
 };
 
 const themeScript = `

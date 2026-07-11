@@ -35,8 +35,8 @@ export function RejectionAnalyzer({ caseId }: { caseId: string }) {
         </div>
         <button className="btn-secondary focus-ring" onClick={loadDemo} type="button"><Wand2 className="h-4 w-4 text-primary" /> Load POPLA escalation demo</button>
       </div>
-      <textarea className="focus-ring min-h-64 w-full rounded-[1.5rem] border border-app bg-app-surface p-4 leading-7" value={text} onChange={(e) => setText(e.target.value)} />
-      <button className="btn-primary focus-ring mt-4" disabled={!text.trim() || loading} onClick={analyze}>
+      <textarea className="focus-ring min-h-48 w-full rounded-[1.5rem] border border-app bg-app-surface p-4 leading-7 sm:min-h-64" value={text} onChange={(e) => setText(e.target.value)} />
+      <button className="btn-primary focus-ring mt-4 w-full sm:w-auto" disabled={!text.trim() || loading} onClick={analyze}>
         {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <FileSearch className="h-5 w-5" />}
         {loading ? "Analysing..." : "Analyse rejection"}
       </button>

@@ -8,3 +8,5 @@ uploads
 *.tsbuildinfo
 dev-server*.log
 .codex-dev-server*.log
+
+/lib/generated/prisma

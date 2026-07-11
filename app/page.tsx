@@ -1,5 +1,5 @@
-import { LandingHero } from "@/components/LandingHero";
+import { ParkPalDemo } from "@/components/ParkPalDemo";
 
 export default function Home() {
-  return <LandingHero />;
+  return <ParkPalDemo />;
 }

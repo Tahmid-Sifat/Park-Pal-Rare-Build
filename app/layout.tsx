@@ -2,29 +2,26 @@
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ParkPal | Parking notice action agent",
-  description: "Upload a parking notice, find deadlines, build evidence, and draft a calm appeal."
+  title: "ParkPal | Scan. Understand. Act.",
+  description: "Scan your parking notice. ParkPal verifies it and helps complete the correct next action."
 };
 
 const themeScript = `
   try {
     const stored = localStorage.getItem("parkpal-theme");
-    document.documentElement.dataset.theme = stored === "vivid" ? "vivid" : "warm";
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.dataset.theme = stored === "dark" || stored === "light" ? stored : systemDark ? "dark" : "light";
   } catch (_) {
-    document.documentElement.dataset.theme = "warm";
+    document.documentElement.dataset.theme = "light";
   }
 `;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="warm" suppressHydrationWarning>
+    <html lang="en" data-theme="light" suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <div className="relative isolate min-h-screen overflow-hidden">
-          <div className="pointer-events-none fixed left-6 top-28 -z-10 hidden h-40 w-28 rotate-[-10deg] rounded-[2rem] border border-app bg-app-surface opacity-40 blur-[1px] lg:block" />
-          <div className="pointer-events-none fixed bottom-24 right-8 -z-10 hidden h-48 w-32 rotate-12 rounded-[2rem] border border-app bg-app-surface opacity-30 blur-[1px] lg:block" />
-          {children}
-        </div>
+        <div className="relative isolate min-h-screen overflow-hidden">{children}</div>
       </body>
     </html>
   );

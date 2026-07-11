@@ -170,7 +170,7 @@ npm run start
 
 ## Environment Variables
 
-Copy `.env.example` to `.env.local` if you want to configure model providers.
+Copy `.env.example` to `.env.local` if you want to configure model providers and the database.
 
 ```bash
 cp .env.example .env.local
@@ -186,6 +186,124 @@ OPENAI_MODEL=gpt-4o-mini
 RAG_MODE=keyword
 EMBEDDING_PROVIDER=none
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+DATABASE_URL=
+```
+
+### PostgreSQL / Prisma
+
+1. Create a database named `parkpal` (or any name you prefer).
+2. Paste your connection string into `DATABASE_URL` in `.env.local` **and** `.env` (Prisma CLI reads `.env`):
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/parkpal?schema=public"
+```
+
+3. Apply schema and generate the client:
+
+```bash
+npm run db:migrate
+npm run db:generate
+```
+
+After a notice is analysed, ParkPal dual-writes the case: local `data/cases.json` (demo fallback) and PostgreSQL (`User`, `Case`, `AIAnalysis`, `Evidence`, `Appeal`, `Reminder`). AI output is stored as **JSONB** on `AIAnalysis.analysisJson`.
+
+## Inspecting the Database
+
+Wide `SELECT *` results are hard to read when tables include JSONB or long TEXT. Prefer expanded display, selected columns, `jsonb_pretty()`, and truncated text.
+
+### Connect with psql
+
+```bash
+psql -U postgres -d parkpal
+```
+
+### Display settings
+
+Enable expanded mode (auto switches for wide rows):
+
+```text
+\x auto
+```
+
+Enable expanded mode permanently for the session:
+
+```text
+\x
+```
+
+Disable expanded mode:
+
+```text
+\x off
+```
+
+Enable the pager:
+
+```text
+\pset pager on
+```
+
+### Useful queries
+
+Project helpers live in [`queries.sql`](./queries.sql). Run them all:
+
+```bash
+psql -U postgres -d parkpal -f queries.sql
+```
+
+Or:
+
+```bash
+npm run db:inspect
+```
+
+Prisma Studio (GUI):
+
+```bash
+npm run db:studio
+```
+
+### Examples
+
+Important columns only (avoid `SELECT *`):
+
+```sql
+SELECT id, status, "createdAt"
+FROM "Case";
+```
+
+Pretty-print JSONB:
+
+```sql
+SELECT id, jsonb_pretty("analysisJson")
+FROM "AIAnalysis";
+```
+
+Extract JSON properties with `->` / `->>`:
+
+```sql
+SELECT
+  "analysisJson"->>'ticketType' AS ticket_type,
+  "analysisJson"->>'confidence' AS confidence
+FROM "AIAnalysis";
+```
+
+Truncate long TEXT:
+
+```sql
+SELECT
+  LEFT("appealText", 200)
+FROM "Appeal";
+```
+
+> Column names are camelCase and must be quoted (for example `"createdAt"`, `"analysisJson"`) because Prisma maps them that way in PostgreSQL.
+
+### JSONB mapping
+
+Prisma `Json` on PostgreSQL is stored as **JSONB**. In this project it is declared explicitly:
+
+```prisma
+analysisJson Json @db.JsonB
 ```
 
 When `DEMO_MODE=true` or no provider key is configured, ParkPal uses deterministic fallback behaviour. This keeps the demo reliable without external services.

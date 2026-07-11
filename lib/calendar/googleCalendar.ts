@@ -7,6 +7,26 @@ export function getGoogleCalendarUrl(_options?: {
   date?: string;
   details?: string;
 }) {
-  // Appointment schedule / shared calendar link provided for ParkPal deadlines.
-  return GOOGLE_CALENDAR_URL;
+  if (!_options?.title || !_options.date) return GOOGLE_CALENDAR_URL;
+
+  const date = toGoogleDate(_options.date);
+  if (!date) return GOOGLE_CALENDAR_URL;
+
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: _options.title,
+    dates: `${date}/${date}`,
+    details: _options.details || "ParkPal parking notice reminder. Verify the deadline against the official notice."
+  });
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+function toGoogleDate(value: string) {
+  const iso = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (iso) return `${iso[1]}${iso[2]}${iso[3]}`;
+
+  const parsed = new Date(`${value} 12:00:00`);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return [parsed.getFullYear(), String(parsed.getMonth() + 1).padStart(2, "0"), String(parsed.getDate()).padStart(2, "0")].join("");
 }

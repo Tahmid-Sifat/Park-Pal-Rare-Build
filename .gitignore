@@ -1,0 +1,7 @@
+.next
+node_modules
+data/cases.json
+uploads
+.env
+dev-server*.log
+.codex-dev-server*.log

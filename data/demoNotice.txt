@@ -1,0 +1,17 @@
+Private Parking Charge Notice
+Issuer: Metro Retail Park Parking Ltd
+Notice Reference: MRP-2026-0418
+Vehicle Registration: AB12 CDE
+Issue Date: 10/05/2026
+Contravention Date: 07/05/2026
+Contravention Time: 14:18
+Location: Metro Retail Park, High Street, London
+Amount Due: GBP 100
+Discounted Amount: GBP 60 if paid within 14 days
+Reason: No valid payment or exceeded maximum permitted stay
+Appeal Deadline: 07/06/2026
+Payment Deadline: 07/06/2026
+Appeal online: https://example.com/appeal
+Pay online: https://example.com/pay
+
+The driver stopped briefly for approximately 12 minutes to collect a pharmacy prescription. The user says the signage was unclear from the stopping location and has a pharmacy receipt and photo of the sign.

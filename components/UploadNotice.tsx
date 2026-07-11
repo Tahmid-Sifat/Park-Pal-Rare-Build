@@ -24,14 +24,14 @@ export function UploadNotice() {
     if (params.get("demo") === "true") void loadDemo();
   }, [params]);
 
-  async function loadDemo() {
+  async function loadDemo(scenario: "private" | "council" = "private") {
     setError("");
     setNoticeFile(null);
-    const res = await fetch("/api/demo-notice");
+    const res = await fetch(`/api/demo-notice?scenario=${scenario}`);
     const text = await res.text();
     setNoticeText(text);
     setDemoEvidence(true);
-    setFileText("Demo private parking notice");
+    setFileText(scenario === "council" ? "Demo council PCN / Notice to Owner" : "Demo private parking charge");
   }
 
   async function handleFile(file?: File) {
@@ -175,11 +175,15 @@ export function UploadNotice() {
             <aside className="space-y-4">
               <div className="soft-panel p-5">
                 <FileText className="mb-4 h-6 w-6 text-primary" />
-                <h2 className="text-xl font-black text-app">Demo-ready path</h2>
-                <p className="mt-2 text-sm leading-6 text-muted">Load a private parking charge with evidence, deadlines, appeal grounds, and a draft ready to inspect.</p>
-                <button className="btn-secondary focus-ring mt-4 w-full" onClick={loadDemo} type="button">
+                <h2 className="text-xl font-black text-app">Demo-ready cases</h2>
+                <p className="mt-2 text-sm leading-6 text-muted">Choose a scripted case with evidence, deadlines, appeal grounds, and a draft ready to inspect.</p>
+                <button className="btn-secondary focus-ring mt-4 w-full" onClick={() => loadDemo("private")} type="button">
                   <Wand2 className="h-5 w-5 text-primary" />
-                  Use demo notice
+                  Private charge: signage + short stay
+                </button>
+                <button className="btn-secondary focus-ring mt-3 w-full" onClick={() => loadDemo("council")} type="button">
+                  <Wand2 className="h-5 w-5 text-primary" />
+                  Council PCN: payment + evidence
                 </button>
               </div>
               <div className="soft-panel p-5">

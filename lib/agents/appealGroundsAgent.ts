@@ -2,6 +2,8 @@ import { AppealGround, NoticeFields, NoticeType, RetrievedSource } from "@/lib/t
 
 export function suggestAppealGrounds(fields: NoticeFields, noticeType: NoticeType, sources: RetrievedSource[], demoEvidence = false): AppealGround[] {
   const raw = fields.rawText.toLowerCase();
+  const hasShortStayEvidence = demoEvidence && raw.includes("pharmacy");
+  const hasPaymentEvidence = /payment confirmation|bank transaction|parking app|pay and display|valid ticket/.test(raw);
   const grounds: AppealGround[] = [
     {
       id: "unclear-signage",
@@ -19,11 +21,11 @@ export function suggestAppealGrounds(fields: NoticeFields, noticeType: NoticeTyp
       id: "short-stay",
       title: "Short stay or grace period",
       description: "A short stop may be relevant depending on the site terms, grace period, and evidence.",
-      whyItMayApply: raw.includes("12") || raw.includes("brief") || demoEvidence ? "The user scenario says the vehicle stopped briefly for a pharmacy collection." : "Only use this if the timing can be supported.",
+      whyItMayApply: raw.includes("12") || raw.includes("brief") || hasShortStayEvidence ? "The case describes a short visit that should be checked against the site terms and timing evidence." : "Only use this if the timing can be supported.",
       requiredEvidence: ["Timestamped receipt", "ANPR times", "User timeline"],
-      availableEvidence: demoEvidence ? ["Pharmacy receipt", "Short stay explanation"] : [],
-      strength: demoEvidence ? "strong" : "weak",
-      confidence: demoEvidence ? 0.8 : 0.42,
+      availableEvidence: hasShortStayEvidence ? ["Pharmacy receipt", "Short stay explanation"] : [],
+      strength: hasShortStayEvidence ? "strong" : "weak",
+      confidence: hasShortStayEvidence ? 0.8 : 0.42,
       sourceRefs: refs(sources, ["appeal_grounds.md", "evidence_checklists.md"]),
       warnings: ["Check whether the notice alleges no payment, overstay, or stopping where not permitted."]
     },
@@ -52,6 +54,21 @@ export function suggestAppealGrounds(fields: NoticeFields, noticeType: NoticeTyp
       warnings: ["Avoid accidentally admitting facts that have not been confirmed."]
     }
   ];
+
+  if (hasPaymentEvidence) {
+    grounds.splice(2, 0, {
+      id: "payment-or-permit-evidence",
+      title: "Payment or permit evidence",
+      description: "Payment, permit or session records may not match the allegation on the notice.",
+      whyItMayApply: "The case includes payment or permit evidence that should be compared with the issuer's records and allegation.",
+      requiredEvidence: ["Payment or permit record", "Notice copy", "Issuer evidence if available"],
+      availableEvidence: demoEvidence ? ["Payment confirmation", "Bank transaction", "Parking app record"] : [],
+      strength: demoEvidence ? "strong" : "possible",
+      confidence: demoEvidence ? 0.8 : 0.56,
+      sourceRefs: refs(sources, ["evidence_checklists.md", "council_pcn_overview.md", "private_parking_overview.md"]),
+      warnings: ["Check that the payment or permit matches the vehicle, date, location and alleged parking period."]
+    });
+  }
 
   return grounds;
 }

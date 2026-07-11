@@ -12,7 +12,7 @@ export function ConfirmationPanel({ caseFile }: { caseFile: CaseFile }) {
   ];
 
   return (
-    <section className="premium-card p-6">
+    <section id="verify-details" className="premium-card p-6">
       <div className="mb-5">
         <p className="text-xs font-black uppercase tracking-[0.16em] text-muted">Human confirmation</p>
         <h2 className="mt-2 text-2xl font-black text-app">Check extracted details before submitting</h2>

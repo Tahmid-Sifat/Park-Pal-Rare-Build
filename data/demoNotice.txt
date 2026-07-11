@@ -1,4 +1,5 @@
-Private Parking Charge Notice
+PRIVATE PARKING CHARGE NOTICE — DEMO CASE
+
 Issuer: Metro Retail Park Parking Ltd
 Notice Reference: MRP-2026-0418
 Vehicle Registration: AB12 CDE
@@ -14,4 +15,8 @@ Payment Deadline: 07/06/2026
 Appeal online: https://example.com/appeal
 Pay online: https://example.com/pay
 
-The driver stopped briefly for approximately 12 minutes to collect a pharmacy prescription. The user says the signage was unclear from the stopping location and has a pharmacy receipt and photo of the sign.
+Demo facts and evidence
+The vehicle stopped for approximately 12 minutes to collect a pharmacy prescription. The notice alleges no valid payment. The driver has a timestamped pharmacy receipt, a close-up photograph of the parking sign, and a wider photograph showing that the sign was not clearly visible from the stopping location. The ANPR entry and exit times should be checked against the short visit and the site terms.
+
+Demo goal
+Build an evidence-led first appeal: verify the deadline, review the signage and ANPR evidence, then ask the operator to cancel the charge or provide the next independent appeal route if it refuses.

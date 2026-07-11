@@ -1,0 +1,25 @@
+PENALTY CHARGE NOTICE / NOTICE TO OWNER — DEMO CASE
+
+Issuer: Northbridge Council Parking Services
+Notice Reference: NB-CPN-2026-1187
+Vehicle Registration: CD34 EFG
+Issue Date: 12/05/2026
+Contravention Date: 06/05/2026
+Contravention Time: 09:42
+Location: Station Approach Car Park, Northbridge
+Amount Due: GBP 70
+Discounted Amount: GBP 35 if paid within 14 days
+Reason: Parked without clearly displaying a valid pay and display ticket
+Appeal Deadline: 09/06/2026
+Payment Deadline: 09/06/2026
+Appeal online: https://example.com/northbridge/formal-representations
+Pay online: https://example.com/northbridge/pay
+
+Formal representation stage
+This demo notice is treated as a Notice to Owner. Formal representations should be made to the council through the stated route by the deadline on the notice. If representations are rejected, read the Notice of Rejection for the independent adjudicator route and deadline.
+
+Demo facts and evidence
+The motorist paid for the session using the council parking app. Available evidence includes the app payment confirmation, a bank transaction, and photographs showing faded bay markings and a machine/sign location that did not make the required display method clear. The case should compare the council's photographs and alleged contravention with the payment record and the exact wording on the notice.
+
+Demo goal
+Prepare concise formal representations with an evidence index, a factual timeline, and a request for cancellation or a reasoned response to each point.

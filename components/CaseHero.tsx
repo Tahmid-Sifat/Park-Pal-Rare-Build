@@ -1,5 +1,5 @@
 ﻿import Link from "next/link";
-import { CalendarPlus, FileText, ShieldCheck } from "lucide-react";
+import { CalendarPlus, ShieldCheck } from "lucide-react";
 import { CaseFile } from "@/lib/types/caseTypes";
 import { displayDate } from "@/lib/utils/dateUtils";
 import { getGoogleCalendarUrl } from "@/lib/calendar/googleCalendar";
@@ -28,14 +28,7 @@ export function CaseHero({ caseFile }: { caseFile: CaseFile }) {
             <h1 className="text-[clamp(2rem,5vw,4.6rem)] font-black leading-none tracking-tight text-app">Case dashboard</h1>
             <p className="mt-4 max-w-3xl text-base leading-7 text-muted">{caseFile.likelyRoute}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Link className="btn-primary focus-ring" href={`/case/${caseFile.id}/appeal`}>
-              <FileText className="h-5 w-5" />
-              Review appeal draft
-            </Link>
-            <Link className="btn-secondary focus-ring" href={`/case/${caseFile.id}/pack`}>Export pack</Link>
-            <Link className="btn-secondary focus-ring" href={`/case/${caseFile.id}/rejection`}>Rejection analyzer</Link>
-          </div>
+          <p className="max-w-2xl rounded-3xl border border-app bg-app-surface p-4 text-sm font-semibold leading-6 text-app">Your next steps are ordered below. Keep the original notice nearby while you verify dates and evidence.</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <HeroMetric label="Appeal deadline" value={appealDeadline ? displayDate(appealDeadline.date) : "Needs confirmation"} action={calendarUrl} />

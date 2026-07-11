@@ -33,7 +33,7 @@ export function RejectionAnalyzer({ caseId }: { caseId: string }) {
           <h2 className="mt-2 text-2xl font-black text-app">Upload or paste a rejection letter</h2>
           <p className="mt-2 text-sm text-muted">ParkPal checks for POPLA, IAS, tribunal, court wording, deadline clues, and next route.</p>
         </div>
-        <button className="btn-secondary focus-ring" onClick={loadDemo} type="button"><Wand2 className="h-4 w-4 text-primary" /> Use demo rejection</button>
+        <button className="btn-secondary focus-ring" onClick={loadDemo} type="button"><Wand2 className="h-4 w-4 text-primary" /> Load POPLA escalation demo</button>
       </div>
       <textarea className="focus-ring min-h-64 w-full rounded-[1.5rem] border border-app bg-app-surface p-4 leading-7" value={text} onChange={(e) => setText(e.target.value)} />
       <button className="btn-primary focus-ring mt-4" disabled={!text.trim() || loading} onClick={analyze}>

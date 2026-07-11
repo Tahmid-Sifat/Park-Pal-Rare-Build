@@ -4,12 +4,12 @@ import { AgentWorkflow } from "@/components/AgentWorkflow";
 import { AppealGroundsPanel } from "@/components/AppealGroundsPanel";
 import { AppNav } from "@/components/AppNav";
 import { CaseHero } from "@/components/CaseHero";
+import { CaseActionPlan } from "@/components/CaseActionPlan";
 import { CaseTimeline } from "@/components/CaseTimeline";
 import { ConfirmationPanel } from "@/components/ConfirmationPanel";
 import { DeadlineCards } from "@/components/DeadlineCards";
 import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { EvidenceChecklist } from "@/components/EvidenceChecklist";
-import { NextActions } from "@/components/NextActions";
 import { NoticeSummaryCard } from "@/components/NoticeSummaryCard";
 import { RiskFlags } from "@/components/RiskFlags";
 import { getCase } from "@/lib/storage/caseStore";
@@ -24,14 +24,12 @@ export default async function CasePage({ params }: { params: Promise<{ id: strin
       <AppNav />
       <div className="content-shell space-y-6">
         <CaseHero caseFile={caseFile} />
+        <CaseActionPlan caseFile={caseFile} />
         <AgentWorkflow caseFile={caseFile} />
         <NoticeSummaryCard caseFile={caseFile} />
         <ConfirmationPanel caseFile={caseFile} />
         <DeadlineCards caseFile={caseFile} />
-        <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
-          <NextActions caseFile={caseFile} />
-          <RiskFlags flags={caseFile.riskFlags} />
-        </div>
+        <RiskFlags flags={caseFile.riskFlags} />
         <AppealGroundsPanel caseFile={caseFile} />
         <EvidenceChecklist caseFile={caseFile} />
         <CaseTimeline caseFile={caseFile} />
